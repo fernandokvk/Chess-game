@@ -10,6 +10,8 @@ import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import com.chessgame.Board.Move;
+import com.chessgame.ChessAI;
 import com.chessgame.Game.*;
 import com.chessgame.Pieces.Piece;
 
@@ -93,6 +95,11 @@ public class Panel extends JPanel {
 			int x = e.getX() / Piece.size;
 			int y = e.getY() / Piece.size;
 			game.move(x, y);
+			revalidate();
+			repaint();
+
+			Move aiMove = ChessAI.makeRandomMove(Game.board);
+			game.moveAIPiece(aiMove.getPiece(), aiMove.getToX(), aiMove.getToY());
 			revalidate();
 			repaint();
 		}

@@ -11,26 +11,28 @@ import javax.swing.JPanel;
 
 import com.chessgame.Board.Board;
 import com.chessgame.Board.Move;
+import com.chessgame.ChessAI;
 import com.chessgame.Pieces.*;
+
 
 public class Game {
 	public static Board board = new Board();
 
-	static King wk;
-	static King bk;
-	static ArrayList<Piece> wPieces = new ArrayList<Piece>();
-	static ArrayList<Piece> bPieces = new ArrayList<Piece>();
+	public static King wk;
+	public static King bk;
+	public static ArrayList<Piece> wPieces = new ArrayList<Piece>();
+	public static ArrayList<Piece> bPieces = new ArrayList<Piece>();
 
-	static boolean player = true;
+	public static boolean player = true;
 	public Piece active = null;
 	public static boolean drag = false;
 	public static ArrayList<Piece> AllPieces = new ArrayList<Piece>();
 
 	ArrayList<Move> allPossiblesMoves = new ArrayList<Move>();
 
-	static List<Move> allPlayersMove = new ArrayList<Move>();
+	public static List<Move> allPlayersMove = new ArrayList<Move>();
 	public static List<Move> allEnemysMove = new ArrayList<Move>();
-	private static boolean gameOver = false;
+	public static boolean gameOver = false;
 
 	public Game() {
 		new PieceImages();
@@ -43,6 +45,14 @@ public class Game {
 		generatePlayersTurnMoves(board);
 		generateEnemysMoves(board);
 		checkPlayersLegalMoves();
+	}
+	public void aiPlay() {
+		if (!player) {
+			// Call the com.chessgame.ChessAI class to get a random move
+			Move aiMove = ChessAI.makeRandomMove(board);
+			move(aiMove.getToX(), aiMove.getToY());
+			changeSide();
+		}
 	}
 
 	public void draw(Graphics g, int x, int y, JPanel panel) {
@@ -136,6 +146,7 @@ public class Game {
 
 	public static void checkPlayersLegalMoves() {
 		List<Piece> pieces = null;
+
 		if (player) {
 			pieces = wPieces;
 		} else {
@@ -211,6 +222,14 @@ public class Game {
 				active = null;
 			}
 			drag = false;
+		}
+	}
+	public void moveAIPiece(Piece piece, int toX, int toY) {
+		if (piece != null) {
+			if (piece.makeMove(toX, toY, board)) {
+				tryToPromote(active);
+				changeSide();
+			}
 		}
 	}
 
